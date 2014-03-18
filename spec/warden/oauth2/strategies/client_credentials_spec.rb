@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::ClientCredentials do
   let(:strategy){ described_class }
-  let(:client_model){ double(:ClientApplication) }
+  let(:client_credentials_model){ double(:ClientApplication) }
   subject{ strategy.new({'rack.input' => {}}) }
 
   before do
-    Warden::OAuth2.config.client_model = client_model
+    Warden::OAuth2.config.client_credentials_model = client_credentials_model
   end
 
   describe '#valid?' do

@@ -6,7 +6,7 @@ describe Warden::OAuth2::Strategies::Client do
   subject{ strategy.new({'rack.input' => {}}) }
 
   before do
-    Warden::OAuth2.config.client_model = client_model
+    subject.stub(:model).and_return(client_model)
   end
 
   describe '#client_from_http_basic' do

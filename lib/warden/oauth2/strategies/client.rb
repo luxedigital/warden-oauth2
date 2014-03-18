@@ -5,14 +5,14 @@ module Warden
   module OAuth2
     module Strategies
       class Client < Base
-        attr_reader :client, :client_id, :client_secret
+        attr_reader :client, :client_id, :client_secret, :error_description
 
         def authenticate!
           @client = client_from_http_basic || client_from_request_params
 
           if self.client
             fail "invalid_scope" and return if scope && client.respond_to?(:scope) && !client.scope?(scope)
-            success! self.client
+            client_authenticated
           else
             fail "invalid_client"
           end
@@ -21,13 +21,13 @@ module Warden
         def client_from_http_basic
           return nil unless (env.keys & Rack::Auth::AbstractRequest::AUTHORIZATION_KEYS).any?
           @client_id, @client_secret = *Rack::Auth::Basic::Request.new(env).credentials
-          Warden::OAuth2.config.client_model.locate(self.client_id, self.client_secret)
+          model.locate(self.client_id, self.client_secret)
         end
 
         def client_from_request_params
           @client_id, @client_secret = params['client_id'], params['client_secret']
           return nil unless self.client_id
-          Warden::OAuth2.config.client_model.locate(@client_id, @client_secret)
+          model.locate(@client_id, @client_secret)
         end
 
         def public_client?
@@ -40,6 +40,16 @@ module Warden
             when "invalid_scope" then 403
             else 400
           end
+        end
+
+        protected
+        attr_writer :error_description
+        def model
+          raise 'Model should be defined in a child strategy'
+        end
+
+        def client_authenticated
+          success! self.client
         end
       end
     end
