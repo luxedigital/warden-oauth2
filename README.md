@@ -1,7 +1,8 @@
 # Warden::OAuth2 [![CI Status](https://secure.travis-ci.org/opperator/warden-oauth2.png)](http://travis-ci.org/opperator/warden-oauth2)
 
+This is a fork of [original project](https://github.com/opperator/warden-oauth2) which is actually maintained.
 This library provides a robust set of authorization strategies for
-Warden meant to be used to implement an OAuth 2.0 ([draft 22][oauth2])
+Warden meant to be used to implement an OAuth 2.0 (targeting RFC6749)
 provider.
 
 ## Usage
@@ -15,10 +16,11 @@ require 'warden-oauth2'
 class MyAPI < Grape::API
   use Warden::Manager do |config|
     strategies.add :bearer, Warden::OAuth2::Strategies::Bearer
-    strategies.add :client, Warden::OAuth2::Strategies::Client
+    strategies.add :client_credentials, Warden::OAuth2::Strategies::ClientCredentials
+    strategies.add :resource_owner_password_credentials, Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials
     strategies.add :public, Warden::OAuth2::Strategies::Public
 
-    config.default_strategies :bearer, :client, :public
+    config.default_strategies :bearer, :client_credentials, :resource_owner_password_credentials, :public
     config.failure_app Warden::OAuth2::FailureApp
   end
 
@@ -46,8 +48,10 @@ end
 
 ### Configurable Options
 
-* **client_model:** A client application class. See **Models** below.
-  Defaults to `ClientApplication`.
+* **client_credentials_model:** A client application class used for client credentials authentication. See **Models** below.
+  Defaults to `ClientCredentialsApplication`.
+* **resource_owner_password_credentials_model:** A client application class used for resource owner password authentication. See **Models** below.
+  Defaults to `ResourceOwnerPasswordCredentialsApplication`.
 * **token_model:** An access token class. See **Models** below. Defaults
   to `AccessToken`.
 
@@ -57,15 +61,39 @@ You will need to supply data models to back up the persistent facets of
 your OAuth 2.0 implementation. Below are examples of the interfaces that
 each require.
 
-### Client Application
+### Client Credentials Application
 
 ```ruby
-class ClientApplication
+class ClientCredentialsApplication
   # REQUIRED
   def self.locate(client_id, client_secret = nil)
     # Should return a client application matching the client_id
     # provided, but should ONLY match client_secret if it is
     # provided.
+  end
+
+  # OPTIONAL
+  def scope?(scope)
+    # True if the client should be able to access the scope passed
+    # (usually a symbol) without having an access token.
+  end
+end
+```
+
+### Resource Owner Password Credentials Application
+
+```ruby
+class ResourceOwnerPasswordCredentialsApplication
+  # REQUIRED
+  def self.locate(client_id, client_secret = nil)
+    # Should return a client application matching the client_id
+    # provided, but should ONLY match client_secret if it is
+    # provided.
+  end
+  #REQUIRED
+  def valid?(options={})
+    # Use options[:username] and options[:password] to check
+    # that specified credentials are valid
   end
 
   # OPTIONAL
@@ -117,13 +145,20 @@ sufficient scope. See **Models** above.
 **User:** The Warden user is set to the client application returned by
 `.locate`.
 
-### Client
+### Client credentials
 
 This strategy authenticates an OAuth 2.0 client application directly for
 endpoints that don't require a specific user. You might use this
 strategy when you want to create an API for client statistics or if you
 wish to rate limit based on a client application even for publicly
 accessible endpoints.
+
+**User:** The Warden user is set to the access token returned by `.locate`.
+
+### Resource Owner Password Credential
+
+This strategy creates an access token for a user with matching credentials.
+Use `.valid?` on the client application to determine if user credentials are correct.
 
 **User:** The Warden user is set to the access token returned by `.locate`.
 
@@ -138,8 +173,9 @@ scope is set and is something other than `:public`.
 [oauth2-bearer]: http://tools.ietf.org/html/draft-ietf-oauth-v2-bearer-08
 
 ## License
+The MIT License
 
-Copyright (C) 2011 by Michael Bleigh and Opperator, Inc.
+Copyright (c) 2014 AirService Pty Ltd. http://www.airservice.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
