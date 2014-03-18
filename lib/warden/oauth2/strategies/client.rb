@@ -11,7 +11,7 @@ module Warden
           @client = client_from_http_basic || client_from_request_params
 
           if self.client
-            fail "insufficient_scope" and return if scope && client.respond_to?(:scope) && !client.scope?(scope)
+            fail "invalid_scope" and return if scope && client.respond_to?(:scope) && !client.scope?(scope)
             success! self.client
           else
             fail "invalid_client"
@@ -37,7 +37,7 @@ module Warden
         def error_status
           case message
             when "invalid_client" then 401
-            when "insufficient_scope" then 403
+            when "invalid_scope" then 403
             else 400
           end
         end

@@ -66,7 +66,7 @@ describe Warden::OAuth2::Strategies::Client do
       subject.stub!(:scope).and_return(:confidential_client)
       subject._run!
       subject.result.should == :failure
-      subject.message.should == "insufficient_scope"
+      subject.message.should == "invalid_scope"
       subject.error_status.should == 403
     end
   end

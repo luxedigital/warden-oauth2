@@ -49,7 +49,7 @@ describe Warden::OAuth2::Strategies::Token do
       subject.stub!(:scope).and_return(:secret)
       subject._run!
       subject.result.should == :failure
-      subject.message.should == "insufficient_scope"
+      subject.message.should == "invalid_scope"
       subject.error_status.should == 403
     end
   end
