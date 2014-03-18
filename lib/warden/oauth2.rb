@@ -26,6 +26,7 @@ module Warden
       autoload :Public, 'warden/oauth2/strategies/public'
       autoload :Token,  'warden/oauth2/strategies/token'
       autoload :Client, 'warden/oauth2/strategies/client'
+      autoload :ClientCredentials, 'warden/oauth2/strategies/client_credentials'
       autoload :Bearer, 'warden/oauth2/strategies/bearer'
     end
   end
