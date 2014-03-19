@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "warden-oauth2-strategies"
   gem.require_paths = ["lib"]
   gem.version       = Warden::OAuth2::VERSION
+  gem.licenses      = ['MIT']
 
   gem.add_dependency 'warden'
   gem.add_development_dependency 'rake'
