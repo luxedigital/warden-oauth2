@@ -5,16 +5,16 @@ module Warden
   module OAuth2
     module Strategies
       class Client < Base
-        attr_reader :client, :client_id, :client_secret, :error_description
+        attr_reader :client, :client_id, :client_secret
 
         def authenticate!
           @client = client_from_http_basic || client_from_request_params
 
           if self.client
-            fail "invalid_scope" and return if scope && client.respond_to?(:scope) && !client.scope?(scope)
+            fail 'invalid_scope' and return if scope && client.respond_to?(:scope) && !client.scope?(scope)
             client_authenticated
           else
-            fail "invalid_client"
+            fail 'invalid_client'
           end
         end
 
@@ -36,14 +36,12 @@ module Warden
 
         def error_status
           case message
-            when "invalid_client" then 401
-            when "invalid_scope" then 403
+            when 'invalid_client' then 401
+            when 'invalid_scope' then 403
             else 400
           end
         end
 
-        protected
-        attr_writer :error_description
         def model
           raise 'Model should be defined in a child strategy'
         end

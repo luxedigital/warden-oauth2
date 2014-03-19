@@ -29,6 +29,8 @@ module Warden
       autoload :Client, 'warden/oauth2/strategies/client'
       autoload :ClientCredentials, 'warden/oauth2/strategies/client_credentials'
       autoload :ResourceOwnerPasswordCredentials, 'warden/oauth2/strategies/resource_owner_password_credentials'
+      autoload :IssuingAccessToken, 'warden/oauth2/strategies/issuing_access_token'
+      autoload :AccessingProtectedResource, 'warden/oauth2/strategies/accessing_protected_resource'
       autoload :Bearer, 'warden/oauth2/strategies/bearer'
     end
   end
