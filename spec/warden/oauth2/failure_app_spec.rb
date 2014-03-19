@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::FailureApp do
-  let(:app){ subject }
-  let(:warden){ double(:winning_strategy => @strategy || strategy) }
-  let(:strategy){ double(:message => 'invalid_request') }
+  let(:app) { subject }
+  let(:warden) { double(:winning_strategy => @strategy || strategy) }
 
+  it 'uses empty string is strategy does not provide a description' do
+    @strategy = double(error_status: 500,:message => 'custom', scope: 'bla')
+    get '/unauthenticated', {}, 'warden' => warden
+    last_response.body.should == '{"error":"custom","error_description":""}'
+  end
   context 'with all info' do
     before do
-      @strategy = double(:error_status => 502, :message => 'custom', :scope => 'random')
+      @strategy = double(:error_status => 502, :message => 'custom', error_description: 'description',
+                         :scope => 'random')
       get '/unauthenticated', {}, 'warden' => warden
     end
 
@@ -15,8 +20,8 @@ describe Warden::OAuth2::FailureApp do
       last_response.status.should == 502
     end
 
-    it 'should set the message from the message' do
-      last_response.body.should == '{"error":"custom"}'
+    it 'should set the message and error description from the message' do
+      last_response.body.should == '{"error":"custom","error_description":"description"}'
     end
 
     it 'should set the content type' do
