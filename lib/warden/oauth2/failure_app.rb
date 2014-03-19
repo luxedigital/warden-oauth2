@@ -9,18 +9,22 @@ module Warden
       def call(env)
         warden = env['warden']
         strategy = warden.winning_strategy
-        error_description = strategy.respond_to?(:error_description) ? strategy.error_description : ''
 
-        body = {}
-        body[:error] = strategy.message
-        body[:error_description] = error_description
-        body = JSON.dump(body)
-        status = strategy.error_status
         headers = {'Content-Type' => 'application/json'}
+        body = {}
+        if strategy
+          error_description = strategy.respond_to?(:error_description) ? strategy.error_description : ''
+          body[:error] = strategy.message
+          body[:error_description] = error_description
+          status = strategy.error_status
 
-        headers['X-Accepted-OAuth-Scopes'] = (strategy.scope || :public).to_s
-
-        [status, headers, [body]]
+          headers['X-Accepted-OAuth-Scopes'] = (strategy.scope || :public).to_s
+        else
+          status = 400
+          body[:error] = "invalid_grant"
+          body[:error_description] = "grant_type is not specified or invalid"
+        end
+        [status, headers, [JSON.dump(body)]]
       end
     end
   end
