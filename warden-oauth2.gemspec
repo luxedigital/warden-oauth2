@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Warden::OAuth2::VERSION
   gem.licenses      = ['MIT']
+  gem.required_ruby_version = '>= 1.9.3'
 
   gem.add_dependency 'warden'
   gem.add_development_dependency 'rake'
