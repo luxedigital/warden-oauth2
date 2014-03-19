@@ -15,12 +15,14 @@ require 'warden-oauth2'
 
 class MyAPI < Grape::API
   use Warden::Manager do |config|
-    strategies.add :bearer, Warden::OAuth2::Strategies::Bearer
-    strategies.add :client_credentials, Warden::OAuth2::Strategies::ClientCredentials
-    strategies.add :resource_owner_password_credentials, Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials
-    strategies.add :public, Warden::OAuth2::Strategies::Public
+    config.strategies.add :bearer, Warden::OAuth2::Strategies::Bearer
+    config.strategies.add :client_credentials, Warden::OAuth2::Strategies::ClientCredentials
+    config.strategies.add :resource_owner_password_credentials, Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials
+    config.strategies.add :issuing_access_token, Warden::OAuth2::Strategies::IssuingAccessToken
+    config.strategies.add :accessing_protected_resource, Warden::OAuth2::Strategies::AccessingProtectedResource
 
-    config.default_strategies :bearer, :client_credentials, :resource_owner_password_credentials, :public
+    config.default_strategies :client_credentials, :resource_owner_password_credentials, :issuing_access_token
+    config.default_strategies :bearer, :accessing_protected_resource
     config.failure_app Warden::OAuth2::FailureApp
   end
 
@@ -161,6 +163,14 @@ This strategy creates an access token for a user with matching credentials.
 Use `.valid?` on the client application to determine if user credentials are correct.
 
 **User:** The Warden user is set to the access token returned by `.locate`.
+
+### Issuing Access Token
+
+This strategy is a fallback strategy when cannot issue access token due to unspecified grant_type
+
+### Accessing Protected Resource
+
+This strategy is a fallback strategy when cannot validate access to protected resource due to unspecified token
 
 ### Public
 
