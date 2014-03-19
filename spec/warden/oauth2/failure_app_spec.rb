@@ -4,11 +4,11 @@ describe Warden::OAuth2::FailureApp do
   let(:app) { subject }
   let(:warden) { double(:winning_strategy => @strategy) }
 
-  it 'defaults to invalid_grant if strategy is not found' do
+  it 'defaults to invalid_request if strategy is not found' do
     @strategy = nil
     get '/unauthenticated', {}, 'warden' => warden
     last_response.status.should == 400
-    last_response.body.should == '{"error":"invalid_grant","error_description":"grant_type is not specified or invalid"}'
+    last_response.body.should == '{"error":"invalid_request","error_description":"cannot determine authentication method"}'
   end
   it 'uses empty string is strategy does not provide a description' do
     @strategy = double(error_status: 500,:message => 'custom', scope: 'bla')

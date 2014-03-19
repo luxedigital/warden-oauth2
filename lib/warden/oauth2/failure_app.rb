@@ -21,8 +21,8 @@ module Warden
           headers['X-Accepted-OAuth-Scopes'] = (strategy.scope || :public).to_s
         else
           status = 400
-          body[:error] = "invalid_grant"
-          body[:error_description] = "grant_type is not specified or invalid"
+          body[:error] = 'invalid_request'
+          body[:error_description] = 'cannot determine authentication method'
         end
         [status, headers, [JSON.dump(body)]]
       end
