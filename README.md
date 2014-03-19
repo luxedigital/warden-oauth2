@@ -1,4 +1,4 @@
-# Warden::OAuth2 [![CI Status](https://secure.travis-ci.org/opperator/warden-oauth2.png)](http://travis-ci.org/opperator/warden-oauth2)
+# Warden::OAuth2 [![CI Status](https://secure.travis-ci.org/airservice/warden-oauth2.png)](http://travis-ci.org/airservice/warden-oauth2)
 
 This is a fork of [original project](https://github.com/opperator/warden-oauth2) which is actually maintained.
 This library provides a robust set of authorization strategies for
