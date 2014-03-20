@@ -91,11 +91,11 @@ class ResourceOwnerPasswordCredentialsApplication
     # Should return a client application matching the client_id
     # provided, but should ONLY match client_secret if it is
     # provided.
-  end
-  #REQUIRED
-  def valid?(options={})
-    # Use options[:username] and options[:password] to check
-    # that specified credentials are valid
+    # the returned value should implement the following interface
+    # def valid?(options={})
+      # Use options[:username] and options[:password] to check
+      # that specified credentials are valid
+    # end
   end
 
   # OPTIONAL
