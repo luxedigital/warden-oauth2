@@ -25,7 +25,7 @@ describe Warden::OAuth2::Strategies::Bearer do
 
   describe '#token_string_from_request_params' do
     it 'should pull the :access_token param' do
-      subject.stub(:params).and_return(:access_token => 'abc')
+      subject.stub(:params).and_return('access_token' => 'abc')
       subject.token_string_from_request_params.should == 'abc'
     end
   end
