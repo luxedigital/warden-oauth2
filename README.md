@@ -20,8 +20,9 @@ class MyAPI < Grape::API
     config.strategies.add :resource_owner_password_credentials, Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials
     config.strategies.add :issuing_access_token, Warden::OAuth2::Strategies::IssuingAccessToken
     config.strategies.add :accessing_protected_resource, Warden::OAuth2::Strategies::AccessingProtectedResource
+    config.strategies.add :refresh_token, Warden::OAuth2::Strategies::RefreshToken
 
-    config.default_strategies :client_credentials, :resource_owner_password_credentials, :issuing_access_token
+    config.default_strategies :client_credentials, :resource_owner_password_credentials, :refresh_token, :issuing_access_token
     config.default_strategies :bearer, :accessing_protected_resource
     config.failure_app Warden::OAuth2::FailureApp
   end
@@ -54,9 +55,10 @@ end
   Defaults to `ClientCredentialsApplication`.
 * **resource_owner_password_credentials_model:** A client application class used for resource owner password authentication. See **Models** below.
   Defaults to `ResourceOwnerPasswordCredentialsApplication`.
+* **refresh_token_model:** A refresh token application class used for refresh token authentication. See **Models** below. Defaults
+  to `RefreshTokenApplication`.
 * **token_model:** An access token class. See **Models** below. Defaults
   to `AccessToken`.
-
 ## Models
 
 You will need to supply data models to back up the persistent facets of
@@ -103,6 +105,24 @@ class ResourceOwnerPasswordCredentialsApplication
     # True if the client should be able to access the scope passed
     # (usually a symbol) without having an access token.
   end
+end
+```
+
+### Refresh Token Application
+
+```ruby
+class RefreshTokenApplication
+  # REQUIRED
+  def self.locate(client_id, client_secret = nil)
+    # Should return a refresh token application matching the client_id
+    # provided, but should ONLY match client_secret if it is
+    # provided.
+    # the returned value should implement the following interface
+    # def valid?
+      # Use options[:refresh_token] to check that specified refresh token is valid
+    # end
+  end
+
 end
 ```
 
@@ -161,6 +181,13 @@ accessible endpoints.
 
 This strategy creates an access token for a user with matching credentials.
 Use `.valid?` on the client application to determine if user credentials are correct.
+
+**User:** The Warden user is set to the access token returned by `.locate`.
+
+### Refresh Token
+
+This strategy creates an new access token based on expired access token refresh token.
+Use `.valid?` on the refresh token application to determine if refresh token is valid.
 
 **User:** The Warden user is set to the access token returned by `.locate`.
 
