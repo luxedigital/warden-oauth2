@@ -43,7 +43,7 @@ describe Warden::OAuth2::Strategies::Client do
     end
   end
 
-  describe '#authorize!' do
+  describe '#authenticate!' do
     it 'should succeed if a client is around' do
       client_instance = double
       client_model.stub(:locate).and_return(client_instance)

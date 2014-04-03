@@ -26,7 +26,7 @@ describe Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials do
     end
   end
 
-  describe '#authorize!' do
+  describe '#authenticate!' do
     it 'should fail if a client is around but not valid' do
       client_instance = double(:client_instance, valid?: false)
       client_model.stub(locate: client_instance)
