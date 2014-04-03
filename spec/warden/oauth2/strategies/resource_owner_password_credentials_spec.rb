@@ -32,14 +32,14 @@ describe Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials do
       client_model.stub(locate: client_instance)
       subject.stub(:params).and_return('client_id' => 'awesome', 'username' => 'someuser', 'password' => 'incorrect')
       subject._run!
-      subject.message.should == "invalid_client"
+      subject.message.should == 'invalid_client'
       subject.error_status.should == 401
     end
     it 'should fail if username and password are not provided' do
       client_model.stub(locate: double)
       subject.stub(:params).and_return('client_id' => 'awesome')
       subject._run!
-      subject.message.should == "invalid_request"
+      subject.message.should == 'invalid_request'
       subject.error_status.should == 400
       subject.error_description.should_not be_empty
     end
