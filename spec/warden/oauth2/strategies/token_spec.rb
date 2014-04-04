@@ -23,7 +23,8 @@ describe Warden::OAuth2::Strategies::Token do
     end
     it 'should be successful if there is a token' do
       token_instance = double
-      subject.stub(:token).and_return(token_instance)
+      subject.stub(token_string: 'token_string')
+      token_model.stub(:locate).with('token_string').and_return(token_instance)
       subject._run!
       subject.result.should == :success
       subject.user.should == token_instance
@@ -39,7 +40,7 @@ describe Warden::OAuth2::Strategies::Token do
 
     it 'should fail if the access token is expired' do
       token_instance = double(:respond_to? => true, :expired? => true, :scope? => true)
-      subject.stub(:token).and_return(token_instance)
+      token_model.stub(locate: token_instance)
       subject._run!
       subject.result.should == :failure
       subject.message.should == 'invalid_token'
@@ -48,7 +49,7 @@ describe Warden::OAuth2::Strategies::Token do
 
     it 'should fail if there is insufficient scope' do
       token_instance = double(:respond_to? => true, :expired? => false, :scope? => false)
-      subject.stub(:token).and_return(token_instance)
+      token_model.stub(locate: token_instance)
       subject.stub(:scope).and_return(:secret)
       subject._run!
       subject.result.should == :failure
