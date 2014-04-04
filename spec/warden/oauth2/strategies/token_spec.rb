@@ -18,6 +18,9 @@ describe Warden::OAuth2::Strategies::Token do
   end
 
   describe '#authenticate!' do
+    before do
+      subject.stub(token_string: nil)
+    end
     it 'should be successful if there is a token' do
       token_instance = double
       subject.stub(:token).and_return(token_instance)
@@ -26,12 +29,12 @@ describe Warden::OAuth2::Strategies::Token do
       subject.user.should == token_instance
     end
 
-    it 'should fail if there is not a token' do
-      subject.stub(token: nil)
+    it 'should fail if there is no token located' do
+      token_model.stub(locate: nil)
       subject._run!
       subject.result.should == :failure
-      subject.message.should == "invalid_request"
-      subject.error_status.should == 400
+      subject.message.should == 'invalid_token'
+      subject.error_status.should == 401
     end
 
     it 'should fail if the access token is expired' do
@@ -39,7 +42,7 @@ describe Warden::OAuth2::Strategies::Token do
       subject.stub(:token).and_return(token_instance)
       subject._run!
       subject.result.should == :failure
-      subject.message.should == "invalid_token"
+      subject.message.should == 'invalid_token'
       subject.error_status.should == 401
     end
 
@@ -49,7 +52,7 @@ describe Warden::OAuth2::Strategies::Token do
       subject.stub(:scope).and_return(:secret)
       subject._run!
       subject.result.should == :failure
-      subject.message.should == "invalid_scope"
+      subject.message.should == 'invalid_scope'
       subject.error_status.should == 403
     end
   end
