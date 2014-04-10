@@ -24,8 +24,8 @@ describe Warden::OAuth2::Strategies::AccessingProtectedResource do
     it 'fails with invalid_client' do
       subject._run!
       subject.result.should == :failure
-      subject.message.should == 'invalid_client'
-      subject.error_status.should == 400
+      subject.message.should == 'token_required'
+      subject.error_status.should == 401
       subject.error_description.should_not be_empty
     end
   end

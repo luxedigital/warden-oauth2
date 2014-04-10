@@ -10,7 +10,7 @@ module Warden
 
         def authenticate!
           self.error_description = 'Bearer Token is not provided'
-          fail! 'invalid_client'
+          fail! 'token_required'
         end
       end
     end
