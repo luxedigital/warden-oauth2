@@ -14,7 +14,7 @@ module Warden
             fail! 'invalid_scope' and return if scope && token.respond_to?(:scope?) && !token.scope?(scope)
             success! token
           else
-            fail! 'invalid_request' and return unless token
+            fail! 'invalid_token' and return unless token
           end
         end
 

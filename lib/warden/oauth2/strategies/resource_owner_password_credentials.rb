@@ -16,10 +16,15 @@ module Warden
         def client_authenticated
           if params['username'] && params['password']
             valid_client = client.valid?(username: params['username'], password: params['password'])
-            valid_client ? super : fail("invalid_client")
+            if valid_client
+              super
+            else
+              fail('invalid_client')
+              self.error_description = 'Incorrect username or password'
+            end
           else
-            fail "invalid_request"
-            self.error_description = "username or password are not provided"
+            fail('invalid_request')
+            self.error_description = 'Empty username or password'
           end
         end
       end
