@@ -7,13 +7,13 @@ describe Warden::OAuth2::FailureApp do
   it 'defaults to invalid_request if strategy is not found' do
     @strategy = nil
     get '/unauthenticated', {}, 'warden' => warden
-    last_response.status.should == 400
-    last_response.body.should == '{"error":"invalid_request","error_description":"cannot determine authentication method"}'
+    expect(last_response.status).to eq(400)
+    expect(last_response.body).to eq('{"error":"invalid_request","error_description":"cannot determine authentication method"}')
   end
   it 'uses empty string is strategy does not provide a description' do
     @strategy = double(error_status: 500,:message => 'custom', scope: 'bla')
     get '/unauthenticated', {}, 'warden' => warden
-    last_response.body.should == '{"error":"custom","error_description":""}'
+    expect(last_response.body).to eq('{"error":"custom","error_description":""}')
   end
   context 'with all info' do
     before do
@@ -23,19 +23,19 @@ describe Warden::OAuth2::FailureApp do
     end
 
     it 'should set the status from error_status if there is one' do
-      last_response.status.should == 502
+      expect(last_response.status).to eq(502)
     end
 
     it 'should set the message and error description from the message' do
-      last_response.body.should == '{"error":"custom","error_description":"description"}'
+      expect(last_response.body).to eq('{"error":"custom","error_description":"description"}')
     end
 
     it 'should set the content type' do
-      last_response.headers['Content-Type'].should == 'application/json'
+      expect(last_response.headers['Content-Type']).to eq('application/json')
     end
 
     it 'should set the X-OAuth-Accepted-Scopes header' do
-      last_response.headers['X-Accepted-OAuth-Scopes'].should == 'random'
+      expect(last_response.headers['X-Accepted-OAuth-Scopes']).to eq('random')
     end
   end
 end

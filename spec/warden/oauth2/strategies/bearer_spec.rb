@@ -12,21 +12,21 @@ describe Warden::OAuth2::Strategies::Bearer do
   describe '#token_string_from_header' do
     Rack::Auth::AbstractRequest::AUTHORIZATION_KEYS.each do |key|
       it "should recognize a bearer token in the #{key} environment key" do
-        subject.stub(:env).and_return({key => "Bearer abc"})
-        subject.token_string_from_header.should == 'abc'
+        allow(subject).to receive(:env).and_return({key => "Bearer abc"})
+        expect(subject.token_string_from_header).to eq('abc')
       end
     end
 
     it 'should ignore a non-bearer authorization header' do
-      subject.stub(:env).and_return('HTTP_AUTHORIZATION' => 'Other do do do')
-      subject.token_string_from_header.should be_nil
+      allow(subject).to receive(:env).and_return('HTTP_AUTHORIZATION' => 'Other do do do')
+      expect(subject.token_string_from_header).to be_nil
     end
   end
 
   describe '#token_string_from_request_params' do
     it 'should pull the :access_token param' do
-      subject.stub(:params).and_return('access_token' => 'abc')
-      subject.token_string_from_request_params.should == 'abc'
+      allow(subject).to receive(:params).and_return('access_token' => 'abc')
+      expect(subject.token_string_from_request_params).to eq('abc')
     end
   end
 end

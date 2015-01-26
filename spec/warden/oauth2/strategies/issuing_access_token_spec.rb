@@ -6,21 +6,21 @@ describe Warden::OAuth2::Strategies::IssuingAccessToken do
 
   describe '#valid?' do
     it 'returns false when grant_type is specified' do
-      subject.stub(:params).and_return({'grant_type' => 'whatever'})
-      subject.should_not be_valid
+      allow(subject).to receive(:params).and_return({'grant_type' => 'whatever'})
+      expect(subject).not_to be_valid
     end
     it 'returns true when the grant_type is not specified' do
-      subject.stub(:params).and_return({})
-      subject.should be_valid
+      allow(subject).to receive(:params).and_return({})
+      expect(subject).to be_valid
     end
   end
   describe '#authenticate!' do
     it 'fails with invalid grant' do
       subject._run!
-      subject.result.should == :failure
-      subject.message.should == 'invalid_grant'
-      subject.error_status.should == 400
-      subject.error_description.should_not be_empty
+      expect(subject.result).to eq(:failure)
+      expect(subject.message).to eq('invalid_grant')
+      expect(subject.error_status).to eq(400)
+      expect(subject.error_description).not_to be_empty
     end
   end
 end

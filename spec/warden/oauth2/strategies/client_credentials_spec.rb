@@ -11,18 +11,18 @@ describe Warden::OAuth2::Strategies::ClientCredentials do
 
   describe '#valid?' do
     it 'returns false if the grant type is not specified' do
-      subject.stub(:params).and_return({})
-      subject.should_not be_valid
+      allow(subject).to receive(:params).and_return({})
+      expect(subject).not_to be_valid
     end
 
     it 'returns true if the grant type is client_credentials' do
-      subject.stub(:params).and_return({'grant_type' => 'client_credentials'})
-      subject.should be_valid
+      allow(subject).to receive(:params).and_return({'grant_type' => 'client_credentials'})
+      expect(subject).to be_valid
     end
 
     it 'returns false if the grant type is not client_credentials' do
-      subject.stub(:params).and_return({'grant_type' => 'whatever'})
-      subject.should_not be_valid
+      allow(subject).to receive(:params).and_return({'grant_type' => 'whatever'})
+      expect(subject).not_to be_valid
     end
   end
 end

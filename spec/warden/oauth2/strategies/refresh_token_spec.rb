@@ -10,62 +10,62 @@ describe Warden::OAuth2::Strategies::RefreshToken do
   end
   describe '#valid?' do
     it 'returns false if the grant type is not specified' do
-      subject.stub(:params).and_return({})
-      subject.should_not be_valid
+      allow(subject).to receive(:params).and_return({})
+      expect(subject).not_to be_valid
     end
 
     it 'returns true if the grant type is refresh_token' do
-      subject.stub(:params).and_return({'grant_type' => 'refresh_token'})
-      subject.should be_valid
+      allow(subject).to receive(:params).and_return({'grant_type' => 'refresh_token'})
+      expect(subject).to be_valid
     end
 
     it 'returns false if the grant type is not password' do
-      subject.stub(:params).and_return({'grant_type' => 'whatever'})
-      subject.should_not be_valid
+      allow(subject).to receive(:params).and_return({'grant_type' => 'whatever'})
+      expect(subject).not_to be_valid
     end
   end
 
 
   describe 'authenticate!' do
     it 'should fail if no refresh token provided' do
-      client_model.stub(locate: double)
-      subject.stub(:params).and_return('client_id' => 'client_id')
+      allow(client_model).to receive_messages(locate: double)
+      allow(subject).to receive(:params).and_return('client_id' => 'client_id')
 
       subject._run!
 
-      subject.result.should == :failure
-      subject.message.should == "invalid_request"
-      subject.error_status.should == 400
+      expect(subject.result).to eq(:failure)
+      expect(subject.message).to eq("invalid_request")
+      expect(subject.error_status).to eq(400)
     end
 
     it 'should succeed if a client is around' do
       client_instance = double
-      client_instance.stub(:valid?).with(refresh_token: 'some_token').and_return(true)
-      client_model.stub(:locate).with('client_id', nil).and_return(client_instance)
-      subject.stub(:params).and_return('client_id' => 'client_id', 'refresh_token' => 'some_token')
+      allow(client_instance).to receive(:valid?).with(refresh_token: 'some_token').and_return(true)
+      allow(client_model).to receive(:locate).with('client_id', nil).and_return(client_instance)
+      allow(subject).to receive(:params).and_return('client_id' => 'client_id', 'refresh_token' => 'some_token')
       subject._run!
-      subject.user.should == client_instance
-      subject.result.should == :success
+      expect(subject.user).to eq(client_instance)
+      expect(subject.result).to eq(:success)
     end
 
     it 'should fail if a client is not found' do
-      client_model.stub(locate: nil)
-      subject.stub(:params).and_return('refresh_token' => 'some_token')
+      allow(client_model).to receive_messages(locate: nil)
+      allow(subject).to receive(:params).and_return('refresh_token' => 'some_token')
       subject._run!
-      subject.result.should == :failure
-      subject.message.should == "invalid_client"
+      expect(subject.result).to eq(:failure)
+      expect(subject.message).to eq("invalid_client")
     end
 
     it 'should fail if client is not valid' do
       client_instance = double(valid?: false)
-      client_model.stub(locate: client_instance)
-      subject.stub(:params).and_return('client_id' => 'client_id','refresh_token' => 'some_token')
+      allow(client_model).to receive_messages(locate: client_instance)
+      allow(subject).to receive(:params).and_return('client_id' => 'client_id','refresh_token' => 'some_token')
       subject._run!
-      subject.user.should == nil
-      subject.result.should == :failure
-      subject.message.should == "invalid_token"
-      subject.error_description.should_not be_empty
-      subject.error_status.should == 401
+      expect(subject.user).to eq(nil)
+      expect(subject.result).to eq(:failure)
+      expect(subject.message).to eq("invalid_token")
+      expect(subject.error_description).not_to be_empty
+      expect(subject.error_status).to eq(401)
     end
   end
 end
