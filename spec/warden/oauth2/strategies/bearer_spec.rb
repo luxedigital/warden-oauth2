@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::Bearer do
-  let(:strategy){ Warden::OAuth2::Strategies::Bearer }
-  let(:token_model){ double(:AccessToken) }
-  subject{ strategy.new({'rack.input' => {}}) }
+  let(:strategy) { Warden::OAuth2::Strategies::Bearer }
+  let(:token_model) { double(:AccessToken) }
+  subject { strategy.new('rack.input' => {}) }
 
   before do
     Warden::OAuth2.config.token_model = token_model
@@ -12,7 +12,7 @@ describe Warden::OAuth2::Strategies::Bearer do
   describe '#token_string_from_header' do
     Rack::Auth::AbstractRequest::AUTHORIZATION_KEYS.each do |key|
       it "should recognize a bearer token in the #{key} environment key" do
-        allow(subject).to receive(:env).and_return({key => "Bearer abc"})
+        allow(subject).to receive(:env).and_return(key => 'Bearer abc')
         expect(subject.token_string_from_header).to eq('abc')
       end
     end

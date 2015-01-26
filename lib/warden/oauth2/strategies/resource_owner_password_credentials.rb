@@ -3,12 +3,13 @@ require 'warden-oauth2'
 module Warden
   module OAuth2
     module Strategies
-      class ResourceOwnerPasswordCredentials< Client
+      class ResourceOwnerPasswordCredentials < Client
         def valid?
           params['grant_type'] == 'password'
         end
 
         protected
+
         def model
           Warden::OAuth2.config.resource_owner_password_credentials_model
         end

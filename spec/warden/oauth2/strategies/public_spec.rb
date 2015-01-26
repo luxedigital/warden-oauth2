@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::Public do
-  let(:env){ {'PATH_INFO' => '/resource'} }
-  let(:strategy){ Warden::OAuth2::Strategies::Public }
-  subject{ strategy.new(env) }
+  let(:env) { { 'PATH_INFO' => '/resource' } }
+  let(:strategy) { Warden::OAuth2::Strategies::Public }
+  subject { strategy.new(env) }
 
   it 'should succeed with no scope' do
     subject._run!
@@ -20,7 +20,7 @@ describe Warden::OAuth2::Strategies::Public do
     allow(subject).to receive(:scope).and_return(:user)
     subject._run!
     expect(subject).to be_halted
-    expect(subject.message).to eq("invalid_scope")
+    expect(subject.message).to eq('invalid_scope')
     expect(subject.result).to eq(:failure)
   end
 end

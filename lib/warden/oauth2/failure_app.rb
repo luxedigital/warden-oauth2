@@ -10,7 +10,7 @@ module Warden
         warden = env['warden']
         strategy = warden.winning_strategy
 
-        headers = {'Content-Type' => 'application/json'}
+        headers = { 'Content-Type' => 'application/json' }
         body = {}
         if strategy
           error_description = strategy.respond_to?(:error_description) ? strategy.error_description : ''

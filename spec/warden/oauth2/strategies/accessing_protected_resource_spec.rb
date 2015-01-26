@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::AccessingProtectedResource do
-  let(:strategy){ described_class }
-  subject{ strategy.new({'rack.input' => {}}) }
+  let(:strategy) { described_class }
+  subject { strategy.new('rack.input' => {}) }
 
   describe '#valid?' do
     Rack::Auth::AbstractRequest::AUTHORIZATION_KEYS.each do |key|
       it 'returns true if token string is not correct' do
-        allow(subject).to receive(:env).and_return({key => 'Some sneaky key'})
+        allow(subject).to receive(:env).and_return(key => 'Some sneaky key')
         expect(subject).to be_valid
       end
     end
@@ -16,7 +16,7 @@ describe Warden::OAuth2::Strategies::AccessingProtectedResource do
       expect(subject).to be_valid
     end
     it 'returns false if token string is correct' do
-      allow(subject).to receive(:env).and_return({'HTTP_AUTHORIZATION' => 'Bearer abc'})
+      allow(subject).to receive(:env).and_return('HTTP_AUTHORIZATION' => 'Bearer abc')
       expect(subject).not_to be_valid
     end
   end

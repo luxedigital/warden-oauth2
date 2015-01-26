@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::IssuingAccessToken do
-  let(:strategy){ described_class }
-  subject{ strategy.new({'rack.input' => {}}) }
+  let(:strategy) { described_class }
+  subject { strategy.new('rack.input' => {}) }
 
   describe '#valid?' do
     it 'returns false when grant_type is specified' do
-      allow(subject).to receive(:params).and_return({'grant_type' => 'whatever'})
+      allow(subject).to receive(:params).and_return('grant_type' => 'whatever')
       expect(subject).not_to be_valid
     end
     it 'returns true when the grant_type is not specified' do

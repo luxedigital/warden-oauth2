@@ -10,11 +10,11 @@ module Warden
 
         def authenticate!
           if token
-            fail! 'invalid_token' and return if token.respond_to?(:expired?) && token.expired?
-            fail! 'invalid_scope' and return if scope && token.respond_to?(:scope?) && !token.scope?(scope)
+            fail!('invalid_token') && return if token.respond_to?(:expired?) && token.expired?
+            fail!('invalid_scope') && return if scope && token.respond_to?(:scope?) && !token.scope?(scope)
             success! token
           else
-            fail! 'invalid_token' and return unless token
+            fail!('invalid_token') && return unless token
           end
         end
 
@@ -23,7 +23,7 @@ module Warden
         end
 
         def token_string
-          raise NotImplementedError
+          fail NotImplementedError
         end
 
         def error_status

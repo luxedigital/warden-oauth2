@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::RefreshToken do
-  let(:strategy){ described_class }
-  let(:client_model){ double(:RefreshTokenApplication) }
-  subject{ strategy.new({'rack.input' => {}}) }
+  let(:strategy) { described_class }
+  let(:client_model) { double(:RefreshTokenApplication) }
+  subject { strategy.new('rack.input' => {}) }
 
   before do
     Warden::OAuth2.config.refresh_token_model = client_model
@@ -15,16 +15,15 @@ describe Warden::OAuth2::Strategies::RefreshToken do
     end
 
     it 'returns true if the grant type is refresh_token' do
-      allow(subject).to receive(:params).and_return({'grant_type' => 'refresh_token'})
+      allow(subject).to receive(:params).and_return('grant_type' => 'refresh_token')
       expect(subject).to be_valid
     end
 
     it 'returns false if the grant type is not password' do
-      allow(subject).to receive(:params).and_return({'grant_type' => 'whatever'})
+      allow(subject).to receive(:params).and_return('grant_type' => 'whatever')
       expect(subject).not_to be_valid
     end
   end
-
 
   describe 'authenticate!' do
     it 'should fail if no refresh token provided' do
@@ -34,7 +33,7 @@ describe Warden::OAuth2::Strategies::RefreshToken do
       subject._run!
 
       expect(subject.result).to eq(:failure)
-      expect(subject.message).to eq("invalid_request")
+      expect(subject.message).to eq('invalid_request')
       expect(subject.error_status).to eq(400)
     end
 
@@ -53,17 +52,17 @@ describe Warden::OAuth2::Strategies::RefreshToken do
       allow(subject).to receive(:params).and_return('refresh_token' => 'some_token')
       subject._run!
       expect(subject.result).to eq(:failure)
-      expect(subject.message).to eq("invalid_client")
+      expect(subject.message).to eq('invalid_client')
     end
 
     it 'should fail if client is not valid' do
       client_instance = double(valid?: false)
       allow(client_model).to receive_messages(locate: client_instance)
-      allow(subject).to receive(:params).and_return('client_id' => 'client_id','refresh_token' => 'some_token')
+      allow(subject).to receive(:params).and_return('client_id' => 'client_id', 'refresh_token' => 'some_token')
       subject._run!
       expect(subject.user).to eq(nil)
       expect(subject.result).to eq(:failure)
-      expect(subject.message).to eq("invalid_token")
+      expect(subject.message).to eq('invalid_token')
       expect(subject.error_description).not_to be_empty
       expect(subject.error_status).to eq(401)
     end

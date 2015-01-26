@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials do
-  let(:strategy){ described_class }
-  let(:client_model){ double(:ClientApplication) }
-  subject{ strategy.new({'rack.input' => {}}) }
+  let(:strategy) { described_class }
+  let(:client_model) { double(:ClientApplication) }
+  subject { strategy.new('rack.input' => {}) }
 
   before do
     Warden::OAuth2.config.resource_owner_password_credentials_model = client_model
@@ -16,12 +16,12 @@ describe Warden::OAuth2::Strategies::ResourceOwnerPasswordCredentials do
     end
 
     it 'returns true if the grant type is password' do
-      allow(subject).to receive(:params).and_return({'grant_type' => 'password'})
+      allow(subject).to receive(:params).and_return('grant_type' => 'password')
       expect(subject).to be_valid
     end
 
     it 'returns false if the grant type is not password' do
-      allow(subject).to receive(:params).and_return({'grant_type' => 'whatever'})
+      allow(subject).to receive(:params).and_return('grant_type' => 'whatever')
       expect(subject).not_to be_valid
     end
   end

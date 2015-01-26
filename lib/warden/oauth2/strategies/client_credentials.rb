@@ -7,6 +7,7 @@ module Warden
         def model
           Warden::OAuth2.config.client_credentials_model
         end
+
         def valid?
           params['grant_type'] == 'client_credentials'
         end

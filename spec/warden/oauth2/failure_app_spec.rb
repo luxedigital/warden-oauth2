@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Warden::OAuth2::FailureApp do
   let(:app) { subject }
-  let(:warden) { double(:winning_strategy => @strategy) }
+  let(:warden) { double(winning_strategy: @strategy) }
 
   it 'defaults to invalid_request if strategy is not found' do
     @strategy = nil
@@ -11,14 +11,14 @@ describe Warden::OAuth2::FailureApp do
     expect(last_response.body).to eq('{"error":"invalid_request","error_description":"cannot determine authentication method"}')
   end
   it 'uses empty string is strategy does not provide a description' do
-    @strategy = double(error_status: 500,:message => 'custom', scope: 'bla')
+    @strategy = double(error_status: 500, message: 'custom', scope: 'bla')
     get '/unauthenticated', {}, 'warden' => warden
     expect(last_response.body).to eq('{"error":"custom","error_description":""}')
   end
   context 'with all info' do
     before do
-      @strategy = double(:error_status => 502, :message => 'custom', error_description: 'description',
-                         :scope => 'random')
+      @strategy = double(error_status: 502, message: 'custom', error_description: 'description',
+                         scope: 'random')
       get '/unauthenticated', {}, 'warden' => warden
     end
 

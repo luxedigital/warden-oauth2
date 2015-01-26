@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Warden::OAuth2::Strategies::Token do
-  let(:token_model){ double }
-  let(:strategy){ Warden::OAuth2::Strategies::Token }
-  subject{ strategy.new({'rack.input' => {}}) }
+  let(:token_model) { double }
+  let(:strategy) { Warden::OAuth2::Strategies::Token }
+  subject { strategy.new('rack.input' => {}) }
 
   before do
     Warden::OAuth2.config.token_model = token_model
