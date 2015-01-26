@@ -10,8 +10,8 @@ module Warden
         def authenticate!
           @client = client_from_http_basic || client_from_request_params
 
-          if self.client
-            fail 'invalid_scope' and return if scope && client.respond_to?(:scope) && !client.scope?(scope)
+          if client
+            fail('invalid_scope') && return if scope && client.respond_to?(:scope) && !client.scope?(scope)
             client_authenticated
           else
             fail 'invalid_client'
@@ -21,12 +21,12 @@ module Warden
         def client_from_http_basic
           return nil unless (env.keys & Rack::Auth::AbstractRequest::AUTHORIZATION_KEYS).any?
           @client_id, @client_secret = *Rack::Auth::Basic::Request.new(env).credentials
-          model.locate(self.client_id, self.client_secret)
+          model.locate(client_id, client_secret)
         end
 
         def client_from_request_params
           @client_id, @client_secret = params['client_id'], params['client_secret']
-          return nil unless self.client_id
+          return nil unless client_id
           model.locate(@client_id, @client_secret)
         end
 
@@ -36,18 +36,18 @@ module Warden
 
         def error_status
           case message
-            when 'invalid_client', 'invalid_token' then 401
-            when 'invalid_scope' then 403
-            else 400
+          when 'invalid_client', 'invalid_token' then 401
+          when 'invalid_scope' then 403
+          else 400
           end
         end
 
         def model
-          raise 'Model should be defined in a child strategy'
+          fail 'Model should be defined in a child strategy'
         end
 
         def client_authenticated
-          success! self.client
+          success! client
         end
       end
     end
