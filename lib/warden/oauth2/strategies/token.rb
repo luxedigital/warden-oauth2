@@ -28,10 +28,10 @@ module Warden
 
         def error_status
           case message
-            when 'invalid_token', 'token_required' then 401
-            when 'invalid_scope' then 403
-            when 'invalid_request' then 400
-            else 400
+          when 'invalid_token', 'token_required' then 401
+          when 'invalid_scope' then 403
+          when 'invalid_request' then 400
+          else 400
           end
         end
       end
